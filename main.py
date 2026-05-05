@@ -82,6 +82,9 @@ def create_report_job(job_request: CreateJobRequest):
     logger.info(f"Received Celery job request. Job ID: {job_request.job_id}, Type: {job_request.task_type}")
     
     context = job_request.model_dump()
+
+    # logger.info(context)
+
     
     run_report_job.delay(context)
 

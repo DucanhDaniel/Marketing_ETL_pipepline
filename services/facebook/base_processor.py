@@ -54,6 +54,10 @@ class FacebookAdsBaseReporter:
         """
         self.access_token = access_token
         self.api_version = api_version
+        
+        # Kiểm tra tính hợp lệ của token ngay khi khởi tạo
+        self._validate_access_token()
+        
         self.email = email or "unknown@example.com"
         self.progress_callback = progress_callback
         self.job_id = job_id
@@ -84,6 +88,31 @@ class FacebookAdsBaseReporter:
         # Log with job_id prefix if available
         prefix = f"[Job {self.job_id}] " if self.job_id else ""
         logger.info(f"{prefix}{message}")
+        
+    def _validate_access_token(self):
+        """
+        Kiểm tra access token trước khi xử lý. 
+        Nếu lỗi sẽ raise Exception và dừng quá trình.
+        """
+        url = f"https://graph.facebook.com/{self.api_version}/me"
+        params = {"access_token": self.access_token}
+        
+        try:
+            response = requests.get(url, params=params)
+            data = response.json()
+            
+            if "error" in data:
+                error_info = data["error"]
+                error_msg = error_info.get("message", "Unknown error")
+                logger.error(f"Access Token Validation Failed: {error_msg}")
+                raise ValueError(f"Invalid Access Token: {error_msg}")
+                
+            logger.info(f"Access token is valid for ID: {data.get('id')}, Name: {data.get('name')}")
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Network error while validating access token: {e}")
+            raise Exception(f"Network error while validating access token: {e}")
+    
     
     # ==================== RATE LIMIT BACKOFF ====================
     
