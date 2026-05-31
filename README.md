@@ -4,6 +4,7 @@ This repository contains the backend server for the Marketing ETL Pipeline proje
 
 ## 🚀 Features
 
+- **High Throughput & Scalability**: Proven in a production environment to process **400k+ records per day**.
 - **Dashboard**: A comprehensive dashboard to monitor tasks, logs, and system status (`/dashboard`).
 - **Async Job Processing**: Utilizes **Celery** and **Redis** for handling background tasks such as generating reports and data processing.
 - **Facebook Ads Integration**: Modules to process and fetch data from Facebook Ads (`services/facebook`).
